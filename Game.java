@@ -56,7 +56,7 @@ public class Game extends Canvas implements Runnable {
         floor = ss.grabImage(6, 6, 32, 32); // load floor tiles
         lives_image = cs.grabImage(13, 8, 32, 32); // load lives tiles
 
-        this.addMouseListener(new MouseInput(handler, camera, this, ss));
+        this.addMouseListener(new MouseInput(handler, camera, this, ss, cs));
 
         loadLevel(level);
     }
@@ -181,14 +181,35 @@ public class Game extends Canvas implements Runnable {
 
             // Handle player death event. (See wizard class)
             if(hp <= 0) {
+                // The player has died, loses a life and the player is removed from game, then....
                 g.setColor(Color.white);
                 g.drawString("Oh snap you dead boo!", 400, 281);
+                g.drawString("Hello", 810, 150);
+
+
+                Rectangle resButton = new Rectangle(810, 150, 150, 75); //reset button.
+                g2d.draw(resButton);
+
+                camera.setX(0); //reset camera so button coordinates dont glitch.
+                camera.setY(0);
             }
 
             // Handle game over event. (See wizard class)
             if(lives <= 0) {
                 g.setColor(Color.white);
                 g.drawString("Game Over!", 400, 281);
+
+                Game.State = Game.STATE.MENU;
+
+                camera.setX(0); //If you forget to reset the camera, you're gonna have a bad time...
+                camera.setY(0);
+
+                // Brief explanation, basically this is refreshing lives so we dont end up back here,
+                // Starting a new game, then killing this thread. If you dont stop this thread.
+                // Youre gonna have a bad time....
+                lives = 3;
+                new Game();
+                stop();
             }
 
             //////////////////////////////////

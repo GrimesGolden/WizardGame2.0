@@ -85,7 +85,8 @@ public class Wizard extends GameObject {
 
             if(tempObject.getId() == ID.Enemy) {
                 if(getBounds().intersects(tempObject.getBounds())) {
-                    game.hp--; //Debug line game.hp--
+                   game.hp--; //Debug line
+
                 }
             }
         }

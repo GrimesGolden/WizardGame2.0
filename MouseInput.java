@@ -13,7 +13,8 @@ shoot ammo. This is not a good technique simply to create a menu button but it d
 
 public class MouseInput extends MouseAdapter {
 
-    // These buttons are here so we can check for their size values and calculate clicks.
+    // These buttons are here so we can check for their size values and calculate clicks. Why are these public...good question.
+    public Rectangle resButton = new Rectangle(810, 150, 150, 75);
     public Rectangle playButton = new Rectangle(810, 150, 150, 75);
     public Rectangle helpButton = new Rectangle(810, 450, 150, 75);
     public Rectangle quitButton = new Rectangle(810, 750, 150, 75);
@@ -22,19 +23,23 @@ public class MouseInput extends MouseAdapter {
     private Camera camera;
     private Game game;
     private SpriteSheet ss;
+    private SpriteSheet cs; //Needs two sprite sheets, that's the reason I would like to just have one big sprite sheet.
 
-    public MouseInput (Handler handler, Camera camera, Game game, SpriteSheet ss) {
+    public MouseInput (Handler handler, Camera camera, Game game, SpriteSheet ss, SpriteSheet cs) {
         this.handler = handler;
         this.camera = camera;
         this.game = game;
         this.ss = ss;
+        this.cs = cs;
     }
 
     public void mousePressed(MouseEvent e) {
         int mx = (int) (e.getX() + camera.getX());
         int my = (int) (e.getY() + camera.getY());
 
+        //Remember camera origins also control button clicks, but camera is mapped to player. Always reset.
         if (Game.State == Game.STATE.GAME) {
+
             for(int i = 0; i < handler.object.size(); i++) {
                 GameObject tempObject = handler.object.get(i);
 
@@ -42,12 +47,17 @@ public class MouseInput extends MouseAdapter {
                     handler.addObject(new Bullet(tempObject.getX()+16, tempObject.getY()+24, ID.Bullet, handler, mx, my, ss));
                     game.ammo--;
                 }
+            } // end object for loop.
+
+            if(resButton.contains(mx, my) && game.hp <= 0) {
+                // Res button if player has died but still has lives > 0.
+                handler.addObject(new Wizard(50, 50, ID.Player, handler, game, cs));
             }
+
         } else if (Game.State == Game.STATE.MENU) {
             if(playButton.contains(mx, my)) {
                 Game.State = Game.STATE.GAME;
             } // end if
-        } // end else if (god what a mess).
+        } // end else if (needs refactoring).
     }
 }
-
