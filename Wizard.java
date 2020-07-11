@@ -99,12 +99,12 @@ public class Wizard extends GameObject {
 
     public void render(Graphics g) {
         if(velX == 0 && velY == 0)
-            g.drawImage(wizard_image[0], x, y, null);
+            g.drawImage(wizard_image[0], x, y, 62, 62, null);
         else
-            anim.render(g, x, y, 32, 32);
+            anim.render(g, x, y, 62, 62);
     }
 
     public Rectangle getBounds() {
-        return new Rectangle (x, y, 32, 28);
+        return new Rectangle (x, y, 62, 62);
     }
 }
