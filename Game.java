@@ -19,10 +19,12 @@ public class Game extends Canvas implements Runnable {
     private BufferedImage sprite_sheet = null;
     private BufferedImage char_sheet = null; //char sheet
     private BufferedImage floor = null;
+    private BufferedImage lives_image;
 
-    // Ammo, hp, and frame must be public for rendering.
+    // Various public variables that are critical for display in the HUD, ammo, hp etc.
     public int ammo = 50;
-    public int hp = 100;
+    public int hp = 0; // Wizard fills the hp upon construction.
+    public int lives = 3;
 
     // Modifying state debug
     public enum STATE{
@@ -51,7 +53,8 @@ public class Game extends Canvas implements Runnable {
 
         cs = new SpriteSheet(char_sheet); // character sheet
 
-        floor = ss.grabImage(6, 6, 32, 32); // paint floor
+        floor = ss.grabImage(6, 6, 32, 32); // load floor tiles
+        lives_image = cs.grabImage(13, 8, 32, 32); // load lives tiles
 
         this.addMouseListener(new MouseInput(handler, camera, this, ss));
 
@@ -168,11 +171,26 @@ public class Game extends Canvas implements Runnable {
             g.setColor(Color.white);
             g.drawString("Ammo: " + ammo, 5, 50);
 
-            // Handle death
+            // Creating lives HUD.
+            // for the amount of lives render an image.
+            int x = 5; // Create x coordinate
+            for (int i = lives; i > 0; i--) {
+                g.drawImage(lives_image, x, 60, null);
+                x += 20;
+            }
+
+            // Handle player death event. (See wizard class)
             if(hp <= 0) {
+                g.setColor(Color.white);
+                g.drawString("Oh snap you dead boo!", 400, 281);
+            }
+
+            // Handle game over event. (See wizard class)
+            if(lives <= 0) {
                 g.setColor(Color.white);
                 g.drawString("Game Over!", 400, 281);
             }
+
             //////////////////////////////////
             g.dispose();
             bs.show();

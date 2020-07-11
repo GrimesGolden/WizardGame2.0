@@ -1,4 +1,9 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 
 public class Menu {
 
@@ -7,13 +12,20 @@ public class Menu {
     public Rectangle helpButton = new Rectangle(810, 450, 150, 75);
     public Rectangle quitButton = new Rectangle(810, 750, 150, 75);
 
+    // Image handling
+    private BufferedImage background;
+
     public void render(Graphics g) {
         // Casting graphics 2D to g2d.
         Graphics2D g2d = (Graphics2D) g;
 
-        // Paint background for menu
-        g.setColor(Color.red);
-        g.fillRect(0, 0, 1920, 1080);
+        // Load background for menu as a buffered Image
+        BufferedImageLoader loader = new BufferedImageLoader();
+        background = loader.loadImage("/menu_background.jpg");
+
+        // Now draw it full size in center of screen (background).
+        g.drawImage(background, 0, 0, null);
+
 
 
         // Create and draw fonts.

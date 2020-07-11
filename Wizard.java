@@ -15,6 +15,7 @@ public class Wizard extends GameObject {
         super(x, y, id, cs);
         this.handler = handler;
         this.game = game;
+        game.hp += 100;
 
         wizard_image[0] = cs.grabImage(13, 8, 32, 32);
         wizard_image[1] = cs.grabImage(14, 8, 32, 32);
@@ -33,7 +34,12 @@ public class Wizard extends GameObject {
         y += velY;
 
         // Check for game over
+        if(game.lives <= 0) {
+            handler.removeObject(this);
+        }
+
         if(game.hp <= 0) {
+            game.lives--;
             handler.removeObject(this);
         }
 
@@ -79,7 +85,7 @@ public class Wizard extends GameObject {
 
             if(tempObject.getId() == ID.Enemy) {
                 if(getBounds().intersects(tempObject.getBounds())) {
-                    game.hp = 0; //Debug line game.hp--
+                    game.hp--; //Debug line game.hp--
                 }
             }
         }
