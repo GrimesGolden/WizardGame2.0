@@ -253,6 +253,7 @@ public class Game extends Canvas implements Runnable {
                 /* If the public level_numb variable has incremented
                 Then kill the thread and start a new game loading a new level.
                  BUGGED: Shooting while going through portal will cause a glitch.*/
+                Window.frame.dispose();
                 Window.frame.setVisible(false); // Basically we are opening a new window, so the old window must be taken care of.
                 Window.frame.dispose();
                 new Game(level_numb, lives);

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 
 public class Pause {
-    
+
     // Buttons of course...
     public Rectangle playButton = new Rectangle(810, 150, 150, 75);
     public Rectangle quitButton = new Rectangle(810, 750, 150, 75);

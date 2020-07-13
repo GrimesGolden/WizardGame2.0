@@ -18,7 +18,7 @@ public class Block extends GameObject {
             block_image = ss.grabImage(6, 9 ,32, 32);
         }
 
-        else if(game.level_numb == 2) {
+        else if(game.level_numb > 1) {
             block_image = ss.grabImage(26, 11 ,32, 32);
         }
 

@@ -21,7 +21,7 @@ public class Window {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        //device.setFullScreenWindow(frame); // Careful with this
+        device.setFullScreenWindow(frame); // Careful with this
     }
 
     public static void quitGame(){
@@ -29,10 +29,5 @@ public class Window {
         frame.setVisible(false);
         frame.dispose();
         System.exit(0);
-    }
-
-    public static void closeGame(){
-        // If quit game is activated, the window will close and the program will exit.
-        frame.setVisible(false);
     }
 }
