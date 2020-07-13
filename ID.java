@@ -4,5 +4,6 @@ public enum ID {
     Crate(),
     Totem(),
     Bullet(),
-    Minion();
+    Minion(),
+    Knight();
 }

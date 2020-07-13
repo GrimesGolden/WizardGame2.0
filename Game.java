@@ -281,21 +281,23 @@ public class Game extends Canvas implements Runnable {
                 int green = (pixel >> 8) & 0xff;
                 int blue = (pixel) & 0xff;
 
-                if(red == 255 && green == 0) // pure red
+                if(red == 255 && green == 0 && blue == 0) // pure red
                     handler.addObject(new Block(xx*32, yy*32, ID.Block, ss, this));
 
-                if(blue == 255 && green == 0) // pure blue
+                if(red == 0 && green == 0 && blue == 255) // pure blue
                     handler.addObject(new Wizard(xx*32, yy*32, ID.Player, handler, this, cs));
 
-                if(green == 255 && blue == 0) // pure green
+                if(red == 0 && green == 255 && blue == 0) // pure green
                     handler.addObject(new Minion(xx*32, yy*32, ID.Minion, handler, cs));
 
-                if(green == 255 && blue == 255) // pure cyan
+                if(red == 0 && green == 255 && blue == 255) // pure cyan
                     handler.addObject(new Crate(xx*32, yy*32, ID.Crate, ss));
 
-                if(red == 255 && green == 255) // pure yellow
+                if(red == 255 && green == 255 && blue == 0) // pure yellow
                     handler.addObject(new Totem(xx*32, yy*32, ID.Totem, ss));
 
+                if(red == 255 && green == 0 && blue == 255) //pure magenta
+                    handler.addObject(new Knight(xx*32, yy*32, ID.Knight, handler, cs));
             }
         }
     }
