@@ -288,7 +288,7 @@ public class Game extends Canvas implements Runnable {
                     handler.addObject(new Wizard(xx*32, yy*32, ID.Player, handler, this, cs));
 
                 if(green == 255 && blue == 0) // pure green
-                    handler.addObject(new Enemy(xx*32, yy*32, ID.Enemy, handler, cs));
+                    handler.addObject(new Minion(xx*32, yy*32, ID.Minion, handler, cs));
 
                 if(green == 255 && blue == 255) // pure cyan
                     handler.addObject(new Crate(xx*32, yy*32, ID.Crate, ss));

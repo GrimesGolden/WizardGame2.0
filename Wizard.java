@@ -92,7 +92,7 @@ public class Wizard extends GameObject {
                 }
             }
 
-            if(tempObject.getId() == ID.Enemy) {
+            if(tempObject.getId() == ID.Minion) {
                 if(getBounds().intersects(tempObject.getBounds())) {
                    game.hp--; //Debug line
 
