@@ -20,6 +20,7 @@ public class Game extends Canvas implements Runnable {
     private BufferedImage char_sheet = null; //char sheet
     private BufferedImage floor = null;
     private BufferedImage lives_image;
+    private BufferedImage exit_image;
 
     // Various public variables that are critical for display in the HUD, ammo, hp etc.
     public int ammo = 50;
@@ -60,6 +61,7 @@ public class Game extends Canvas implements Runnable {
         cs = new SpriteSheet(char_sheet); // character sheet
 
         lives_image = cs.grabImage(13, 8, 32, 32);
+        exit_image = ss.grabImage(14, 17, 32, 32);
 
         // level_numb parameter determines which level is loaded.
         if (current_level == 1) {
@@ -193,6 +195,9 @@ public class Game extends Canvas implements Runnable {
             g.setColor(Color.white);
             g.drawString("Level: " + level_numb, 5, 70);
 
+            // Creating menu HUD.
+            g.drawImage(exit_image, 150, 35, null);
+
             // Creating lives HUD.
             // for the amount of lives render an image.
             int x = 100; // Create x coordinate
@@ -239,12 +244,12 @@ public class Game extends Canvas implements Runnable {
                 /* If the public level_numb variable has incremented
                 Then kill the thread and start a new game loading a new level.
                  BUGGED: Shooting while going through portal will cause a glitch.*/
+                Window.frame.setVisible(false); // Basically we are opening a new window, so the old window must be taken care of.
+                Window.frame.dispose();
                 new Game(level_numb, lives);
                 stop();
             }
             //////////////////////////////////
-            //g.dispose();
-            //bs.show();
         } else if(State == STATE.MENU) {
             menu.render(g);
         }//end if state

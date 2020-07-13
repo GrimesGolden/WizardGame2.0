@@ -23,7 +23,12 @@ public class Window {
     public static void quitGame(){
         // If quit game is activated, the window will close and the program will exit.
         frame.setVisible(false);
-        frame.dispose();;
+        frame.dispose();
         System.exit(0);
+    }
+
+    public static void closeGame(){
+        // If quit game is activated, the window will close and the program will exit.
+        frame.setVisible(false);
     }
 }
