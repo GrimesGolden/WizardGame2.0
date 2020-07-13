@@ -18,6 +18,7 @@ public class MouseInput extends MouseAdapter {
     public Rectangle playButton = new Rectangle(810, 150, 150, 75);
     public Rectangle helpButton = new Rectangle(810, 450, 150, 75);
     public Rectangle quitButton = new Rectangle(810, 750, 150, 75);
+    public Rectangle escButton = new Rectangle(250, 5, 75, 25);
 
     private Handler handler;
     private Camera camera;
@@ -37,6 +38,9 @@ public class MouseInput extends MouseAdapter {
         int mx = (int) (e.getX() + camera.getX());
         int my = (int) (e.getY() + camera.getY());
 
+        int x = e.getX();
+        int y = e.getY();
+
         //Remember camera origins also control button clicks, but camera is mapped to player. Always reset.
         if (Game.State == Game.STATE.GAME) {
 
@@ -54,12 +58,19 @@ public class MouseInput extends MouseAdapter {
                 handler.addObject(new Wizard(50, 50, ID.Player, handler, game, cs));
             }
 
-        } else if (Game.State == Game.STATE.MENU) {
-            if(playButton.contains(mx, my)) {
+            if(escButton.contains(x, y)) {
+                // Res button if player has died but still has lives > 0.
+                Game.State = Game.STATE.MENU;
+            }
+
+        }
+
+        else if (Game.State == Game.STATE.MENU) {
+            if(playButton.contains(x, y)) {
                 Game.State = Game.STATE.GAME;
             }
 
-            else if(quitButton.contains(mx,my)) {
+            else if(quitButton.contains(x,y)) {
                 Window.quitGame();
             }
         } // end else if (needs refactoring).

@@ -1,9 +1,12 @@
-import java.awt.Dimension;
+import java.awt.*;
 import javax.swing.JFrame;
 
 public class Window {
 
     protected static JFrame frame; // This is protected and static, so other classes can access the window for closing, resizing etc.
+
+    protected static GraphicsDevice device = GraphicsEnvironment // Used for fullscreen.
+            .getLocalGraphicsEnvironment().getScreenDevices()[0];
 
     public Window(int width, int height, String title, Game game) {
 
@@ -18,6 +21,7 @@ public class Window {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        //device.setFullScreenWindow(frame); // Careful with this
     }
 
     public static void quitGame(){

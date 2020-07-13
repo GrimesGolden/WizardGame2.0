@@ -20,7 +20,6 @@ public class Game extends Canvas implements Runnable {
     private BufferedImage char_sheet = null; //char sheet
     private BufferedImage floor = null;
     private BufferedImage lives_image;
-    private BufferedImage exit_image;
 
     // Various public variables that are critical for display in the HUD, ammo, hp etc.
     public int ammo = 50;
@@ -61,7 +60,6 @@ public class Game extends Canvas implements Runnable {
         cs = new SpriteSheet(char_sheet); // character sheet
 
         lives_image = cs.grabImage(13, 8, 32, 32);
-        exit_image = ss.grabImage(14, 17, 32, 32);
 
         // level_numb parameter determines which level is loaded.
         if (current_level == 1) {
@@ -195,8 +193,17 @@ public class Game extends Canvas implements Runnable {
             g.setColor(Color.white);
             g.drawString("Level: " + level_numb, 5, 70);
 
-            // Creating menu HUD.
-            g.drawImage(exit_image, 150, 35, null);
+            // Creating escape button.
+            //Rectangle escButton = new Rectangle(250, 5, 75, 25); //quit to menu button.
+            g.setColor(Color.gray);
+            g.fillRect(250, 5, 75, 25);
+            g.setColor(Color.gray);
+            g.fillRect(250, 5, 75, 25);
+            g.setColor(Color.gray);
+            g2d.drawRect(250, 5, 75, 25);
+            g.setColor(Color.black);
+            g.drawString("|| PAUSE", 265, 25);
+
 
             // Creating lives HUD.
             // for the amount of lives render an image.
