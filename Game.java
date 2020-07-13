@@ -25,7 +25,8 @@ public class Game extends Canvas implements Runnable {
     public int ammo = 50;
     public int hp = 0; // Wizard fills the hp upon construction.
     public int lives = 3;
-    public int level_numb;
+    public int level_numb = 1;
+    public boolean totem_flag = false;
 
     // Modifying state debug
     public enum STATE{
@@ -33,9 +34,12 @@ public class Game extends Canvas implements Runnable {
         GAME
     };
 
-    public Game(int level_numb) {
-        new Window(1920,1080,"Wizard Game", this);
+    public Game(int current_level, int current_life) {
+
+        new Window(1980,1080,"Wizard Game", this);
+
         start();
+
 
         // Don't create a new instance of this handler again, could cause problems.
         // Instead swap it into new classes, since the objects are inside this handler.
@@ -43,18 +47,10 @@ public class Game extends Canvas implements Runnable {
         menu = new Menu();
         camera = new Camera(0, 0);
         this.addKeyListener(new KeyInput(handler));
+        lives = current_life;
 
 
         BufferedImageLoader loader = new BufferedImageLoader();
-
-        // level_numb parameter determines which level is loaded.
-        if (level_numb == 1) {
-            level = loader.loadImage("/level_one.png");
-        }
-
-        else if (level_numb == 2) {
-            level = loader.loadImage("/level_two.png");
-        }
 
         sprite_sheet = loader.loadImage("/main_sheet.png");
         char_sheet = loader.loadImage("/wizard_sheet.png"); //char sheet
@@ -63,8 +59,20 @@ public class Game extends Canvas implements Runnable {
 
         cs = new SpriteSheet(char_sheet); // character sheet
 
-        floor = ss.grabImage(6, 6, 32, 32); // load floor tiles
-        lives_image = cs.grabImage(13, 8, 32, 32); // load lives tiles
+        lives_image = cs.grabImage(13, 8, 32, 32);
+
+        // level_numb parameter determines which level is loaded.
+        if (current_level == 1) {
+            level = loader.loadImage("/level_one.png"); // load level
+            floor = ss.grabImage(6, 6, 32, 32); // load floor tiles
+            level_numb = current_level;
+        }
+
+        else if (current_level > 1) {
+            level = loader.loadImage("/level_two.png"); // load level 2
+            floor = ss.grabImage(7, 2, 32, 32); // load different floor tiles
+            level_numb = current_level;
+        }
 
         this.addMouseListener(new MouseInput(handler, camera, this, ss, cs));
 
@@ -181,11 +189,15 @@ public class Game extends Canvas implements Runnable {
             g.setColor(Color.white);
             g.drawString("Ammo: " + ammo, 5, 50);
 
+            // Creating level HUD.
+            g.setColor(Color.white);
+            g.drawString("Level: " + level_numb, 5, 70);
+
             // Creating lives HUD.
             // for the amount of lives render an image.
-            int x = 5; // Create x coordinate
+            int x = 100; // Create x coordinate
             for (int i = lives; i > 0; i--) {
-                g.drawImage(lives_image, x, 60, null);
+                g.drawImage(lives_image, x, 35, null);
                 x += 20;
             }
 
@@ -218,16 +230,16 @@ public class Game extends Canvas implements Runnable {
                 // Starting a new game, then killing this thread. If you dont stop this thread.
                 // You're gonna have a bad time....
                 lives = 3;
-                new Game(1);
+                new Game(1, lives);
                 stop();
             }
 
             // Level functionality (possibly refactor into new function)
-            if(level_numb > 1) {
+            if(totem_flag == true) {
                 /* If the public level_numb variable has incremented
                 Then kill the thread and start a new game loading a new level.
                  BUGGED: Shooting while going through portal will cause a glitch.*/
-                new Game(2);
+                new Game(level_numb, lives);
                 stop();
             }
             //////////////////////////////////
@@ -253,7 +265,7 @@ public class Game extends Canvas implements Runnable {
                 int blue = (pixel) & 0xff;
 
                 if(red == 255 && green == 0) // pure red
-                    handler.addObject(new Block(xx*32, yy*32, ID.Block, ss));
+                    handler.addObject(new Block(xx*32, yy*32, ID.Block, ss, this));
 
                 if(blue == 255 && green == 0) // pure blue
                     handler.addObject(new Wizard(xx*32, yy*32, ID.Player, handler, this, cs));
@@ -272,6 +284,6 @@ public class Game extends Canvas implements Runnable {
     }
 
     public static void main(String[] args){
-        new Game(1);
+        new Game(1, 3);
     }
 }

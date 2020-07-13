@@ -86,7 +86,9 @@ public class Wizard extends GameObject {
             if(tempObject.getId() == ID.Totem) {
 
                 if(getBounds().intersects(tempObject.getBounds())) {
+                    game.totem_flag = true;
                     game.level_numb++;
+                    handler.removeObject(tempObject);
                 }
             }
 

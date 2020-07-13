@@ -11,7 +11,7 @@ public abstract class GameObject {
     public abstract void render(Graphics g); // Draws image and animation to that position.
     public abstract Rectangle getBounds(); // Track collision detection.
 
-    public GameObject(int x, int y, ID id, SpriteSheet ss) {
+    public GameObject(int x, int y, ID id, SpriteSheet ss){
         this.x = x;
         this.y = y;
         this.id = id;

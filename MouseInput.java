@@ -57,7 +57,11 @@ public class MouseInput extends MouseAdapter {
         } else if (Game.State == Game.STATE.MENU) {
             if(playButton.contains(mx, my)) {
                 Game.State = Game.STATE.GAME;
-            } // end if
+            }
+
+            else if(quitButton.contains(mx,my)) {
+                Window.quitGame();
+            }
         } // end else if (needs refactoring).
     }
 }
