@@ -25,6 +25,7 @@ public class Game extends Canvas implements Runnable {
     public int ammo = 50;
     public int hp = 0; // Wizard fills the hp upon construction.
     public int lives = 3;
+    public int level_numb;
 
     // Modifying state debug
     public enum STATE{
@@ -32,7 +33,7 @@ public class Game extends Canvas implements Runnable {
         GAME
     };
 
-    public Game() {
+    public Game(int level_numb) {
         new Window(1920,1080,"Wizard Game", this);
         start();
 
@@ -45,7 +46,16 @@ public class Game extends Canvas implements Runnable {
 
 
         BufferedImageLoader loader = new BufferedImageLoader();
-        level = loader.loadImage("/wizard_level.png");
+
+        // level_numb parameter determines which level is loaded.
+        if (level_numb == 1) {
+            level = loader.loadImage("/level_one.png");
+        }
+
+        else if (level_numb == 2) {
+            level = loader.loadImage("/level_two.png");
+        }
+
         sprite_sheet = loader.loadImage("/main_sheet.png");
         char_sheet = loader.loadImage("/wizard_sheet.png"); //char sheet
 
@@ -183,19 +193,19 @@ public class Game extends Canvas implements Runnable {
             if(hp <= 0) {
                 // The player has died, loses a life and the player is removed from game, then....
                 g.setColor(Color.white);
-                g.drawString("Oh snap you dead boo!", 400, 281);
-                g.drawString("Hello", 810, 150);
+                g.drawString("You have died!", 400, 281);
+                g.drawString("Click to respawn", 810, 150);
 
 
                 Rectangle resButton = new Rectangle(810, 150, 150, 75); //reset button.
                 g2d.draw(resButton);
 
-                camera.setX(0); //reset camera so button coordinates dont glitch.
+                camera.setX(0); //reset camera so button coordinates don't glitch.
                 camera.setY(0);
             }
 
-            // Handle game over event. (See wizard class)
             if(lives <= 0) {
+                // Handle game over event. (Also done through wizard class)
                 g.setColor(Color.white);
                 g.drawString("Game Over!", 400, 281);
 
@@ -206,21 +216,28 @@ public class Game extends Canvas implements Runnable {
 
                 // Brief explanation, basically this is refreshing lives so we dont end up back here,
                 // Starting a new game, then killing this thread. If you dont stop this thread.
-                // Youre gonna have a bad time....
+                // You're gonna have a bad time....
                 lives = 3;
-                new Game();
+                new Game(1);
                 stop();
             }
 
+            // Level functionality (possibly refactor into new function)
+            if(level_numb > 1) {
+                /* If the public level_numb variable has incremented
+                Then kill the thread and start a new game loading a new level.
+                 BUGGED: Shooting while going through portal will cause a glitch.*/
+                new Game(2);
+                stop();
+            }
             //////////////////////////////////
-            g.dispose();
-            bs.show();
+            //g.dispose();
+            //bs.show();
         } else if(State == STATE.MENU) {
             menu.render(g);
         }//end if state
         g.dispose();
         bs.show();
-
     } // end render method
 
     // Loading the level.
@@ -235,22 +252,26 @@ public class Game extends Canvas implements Runnable {
                 int green = (pixel >> 8) & 0xff;
                 int blue = (pixel) & 0xff;
 
-                if(red == 255)
+                if(red == 255 && green == 0) // pure red
                     handler.addObject(new Block(xx*32, yy*32, ID.Block, ss));
 
-                if(blue == 255 && green == 0)
+                if(blue == 255 && green == 0) // pure blue
                     handler.addObject(new Wizard(xx*32, yy*32, ID.Player, handler, this, cs));
 
-                if(green == 255 && blue == 0)
+                if(green == 255 && blue == 0) // pure green
                     handler.addObject(new Enemy(xx*32, yy*32, ID.Enemy, handler, cs));
 
-                if(green == 255 && blue == 255)
+                if(green == 255 && blue == 255) // pure cyan
                     handler.addObject(new Crate(xx*32, yy*32, ID.Crate, ss));
+
+                if(red == 255 && green == 255) // pure yellow
+                    handler.addObject(new Totem(xx*32, yy*32, ID.Totem, ss));
+
             }
         }
     }
 
     public static void main(String[] args){
-        new Game();
+        new Game(1);
     }
 }

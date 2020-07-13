@@ -83,6 +83,13 @@ public class Wizard extends GameObject {
                 }
             }
 
+            if(tempObject.getId() == ID.Totem) {
+
+                if(getBounds().intersects(tempObject.getBounds())) {
+                    game.level_numb++;
+                }
+            }
+
             if(tempObject.getId() == ID.Enemy) {
                 if(getBounds().intersects(tempObject.getBounds())) {
                    game.hp--; //Debug line
