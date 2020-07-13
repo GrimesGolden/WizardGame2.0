@@ -11,6 +11,7 @@ public class Game extends Canvas implements Runnable {
     private Thread thread;
     private Handler handler;
     private Menu menu;
+    private Pause pause;
     private Camera camera;
     private SpriteSheet ss; // spritesheet
     private SpriteSheet cs; // character sheet
@@ -31,7 +32,8 @@ public class Game extends Canvas implements Runnable {
     // Modifying state debug
     public enum STATE{
         MENU,
-        GAME
+        GAME,
+        PAUSE
     };
 
     public Game(int current_level, int current_life) {
@@ -45,6 +47,7 @@ public class Game extends Canvas implements Runnable {
         // Instead swap it into new classes, since the objects are inside this handler.
         handler = new Handler();
         menu = new Menu();
+        pause = new Pause();
         camera = new Camera(0, 0);
         this.addKeyListener(new KeyInput(handler));
         lives = current_life;
@@ -194,7 +197,6 @@ public class Game extends Canvas implements Runnable {
             g.drawString("Level: " + level_numb, 5, 70);
 
             // Creating escape button.
-            //Rectangle escButton = new Rectangle(250, 5, 75, 25); //quit to menu button.
             g.setColor(Color.gray);
             g.fillRect(250, 5, 75, 25);
             g.setColor(Color.gray);
@@ -259,6 +261,8 @@ public class Game extends Canvas implements Runnable {
             //////////////////////////////////
         } else if(State == STATE.MENU) {
             menu.render(g);
+        } else if(State == STATE.PAUSE) {
+            pause.render(g);
         }//end if state
         g.dispose();
         bs.show();

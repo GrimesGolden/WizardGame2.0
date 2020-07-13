@@ -60,7 +60,7 @@ public class MouseInput extends MouseAdapter {
 
             if(escButton.contains(x, y)) {
                 // Res button if player has died but still has lives > 0.
-                Game.State = Game.STATE.MENU;
+                Game.State = Game.STATE.PAUSE;
             }
 
         }
@@ -73,6 +73,16 @@ public class MouseInput extends MouseAdapter {
             else if(quitButton.contains(x,y)) {
                 Window.quitGame();
             }
-        } // end else if (needs refactoring).
+        }
+
+        else if (Game.State == Game.STATE.PAUSE) {
+            if(playButton.contains(x, y)) {
+                Game.State = Game.STATE.GAME;
+            }
+
+            else if(quitButton.contains(x,y)) {
+                Window.quitGame();
+            }
+        }// end else if (needs refactoring). (possibly a switch statement)
     }
 }
