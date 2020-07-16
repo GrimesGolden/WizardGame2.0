@@ -11,6 +11,7 @@ public class Game extends Canvas implements Runnable {
     private Thread thread;
     private Handler handler;
     private Menu menu;
+    private Help help;
     private Pause pause;
     private Camera camera;
     private SpriteSheet ss; // spritesheet
@@ -33,20 +34,21 @@ public class Game extends Canvas implements Runnable {
     public enum STATE{
         MENU,
         GAME,
-        PAUSE
+        HELP,
+        PAUSE,
     };
 
     public Game(int current_level, int current_life) {
 
-        new Window(1980,1080,"Wizard Game", this);
+        //new Window(1980,1080,"Wizard Game", this);
 
-        start();
-
+        Window.changeLevel(this); // Level one
 
         // Don't create a new instance of this handler again, could cause problems.
         // Instead swap it into new classes, since the objects are inside this handler.
         handler = new Handler();
         menu = new Menu();
+        help = new Help();
         pause = new Pause();
         camera = new Camera(0, 0);
         this.addKeyListener(new KeyInput(handler));
@@ -80,6 +82,8 @@ public class Game extends Canvas implements Runnable {
         this.addMouseListener(new MouseInput(handler, camera, this, ss, cs));
 
         loadLevel(level);
+
+        start(); // Everything is loaded in, now begin rendering.
     }
 
     private void start() {
@@ -90,11 +94,11 @@ public class Game extends Canvas implements Runnable {
 
     private void stop() {
         isRunning = false;
-        try {
+        /*try {
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }No need for thread join, rely on boolean*/
     }
 
     public void run() {
@@ -160,7 +164,7 @@ public class Game extends Canvas implements Runnable {
 
 
             // Create background.
-            g.setColor(Color.red);
+            g.setColor(Color.black);
             g.fillRect(0, 0, 1920, 1080);
 
             // Translate location of camera.
@@ -240,28 +244,29 @@ public class Game extends Canvas implements Runnable {
                 camera.setX(0); //If you forget to reset the camera, you're gonna have a bad time...
                 camera.setY(0);
 
-                // Brief explanation, basically this is refreshing lives so we dont end up back here,
-                // Starting a new game, then killing this thread. If you dont stop this thread.
+                // Brief explanation, basically this is refreshing lives so we don't end up back here,
+                // Starting a new game, then killing this thread. If you don't stop this thread.
                 // You're gonna have a bad time....
+                stop();
                 lives = 3;
                 new Game(1, lives);
-                stop();
             }
 
             // Level functionality (possibly refactor into new function)
             if(totem_flag == true) {
                 /* If the public level_numb variable has incremented
                 Then kill the thread and start a new game loading a new level.
-                 BUGGED: Shooting while going through portal will cause a glitch.*/
-                Window.frame.dispose();
-                Window.frame.setVisible(false); // Basically we are opening a new window, so the old window must be taken care of.
-                Window.frame.dispose();
-                new Game(level_numb, lives);
+                If you don't kill the thread with stop(); You're not going to like what happens...
+                Every level will be a new thread. Layering on top of the window.
+                 */
                 stop();
+               new Game(level_numb, lives);
             }
             //////////////////////////////////
         } else if(State == STATE.MENU) {
             menu.render(g);
+        } else if (State == STATE.HELP) {
+            help.render(g);
         } else if(State == STATE.PAUSE) {
             pause.render(g);
         }//end if state
@@ -302,7 +307,8 @@ public class Game extends Canvas implements Runnable {
         }
     }
 
-    public static void main(String[] args){
-        new Game(1, 3);
+    public static void main(String[] args) {
+        new Window(1980,1080,"Wizard Game"); // This window will never be created again. This is the main game window.
+        new Game(1, 3); // Represents the first level thread.
     }
 }
