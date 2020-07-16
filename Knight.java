@@ -12,6 +12,7 @@ public class Knight extends GameObject {
     Random r = new Random();
     int choose = 0;
     int hp = 100;
+    int counter = 0;
 
     int px; // players x and y location
     int py;
@@ -49,6 +50,20 @@ public class Knight extends GameObject {
                     y += (velY*25) * -1; //Invert velocity and shoot it back (ricochet)
                     velX *= -1;
                     velY *= -1;
+                }
+            }
+
+            else if (tempObject.getId() == ID.Block) {
+                if(getBoundsBig().intersects(tempObject.getBounds())) {
+                    x += (velX*10) * -1; // Change velX/Y*int to change bounce level
+                    y += (velY*10) * -1; //Invert velocity and shoot it back (ricochet)
+
+                    counter++;
+
+                    if(counter > 5) {
+                        handler.removeObject(tempObject);
+                        counter = 0;
+                    }
                 }
             }
         }
