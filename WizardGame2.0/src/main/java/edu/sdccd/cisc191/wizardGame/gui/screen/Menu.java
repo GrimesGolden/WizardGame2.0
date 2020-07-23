@@ -21,7 +21,6 @@ public class Menu {
 
     public void render(Graphics g) {
         // Casting graphics 2D to g2d.
-        //Graphics2D g2d = (Graphics2D) g; // Does this even need to happen?
 
         Graphics2D g2d = (Graphics2D) g;
 

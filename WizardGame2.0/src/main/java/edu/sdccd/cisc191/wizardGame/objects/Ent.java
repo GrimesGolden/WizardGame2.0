@@ -7,13 +7,14 @@ import java.util.Random;
 
 import edu.sdccd.cisc191.wizardGame.Game;
 import edu.sdccd.cisc191.wizardGame.gui.anim.Animation;
+import edu.sdccd.cisc191.wizardGame.gui.screen.AbstractLevel;
 import edu.sdccd.cisc191.wizardGame.gui.screen.LevelOne;
 import edu.sdccd.cisc191.wizardGame.utils.images.SpriteSheet;
 
 public class Ent extends GameObject {
 
     private Handler handler;
-    private LevelOne level;
+    private AbstractLevel level;
     private BufferedImage[] ent_image = new BufferedImage[8];
     private SpriteSheet cs; // Used for spawning new minions.
     Animation anim;
@@ -23,7 +24,7 @@ public class Ent extends GameObject {
     int choose = 0;
     int hp = 100;
 
-    public Ent(int x, int y, ID id, Handler handler, LevelOne level, SpriteSheet cs) {
+    public Ent(int x, int y, ID id, Handler handler, AbstractLevel level, SpriteSheet cs) {
         super(x, y, id, cs);
         this.handler = handler;
         this.level = level;

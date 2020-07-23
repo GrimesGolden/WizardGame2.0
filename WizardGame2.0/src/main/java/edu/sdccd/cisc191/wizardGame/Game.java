@@ -61,9 +61,9 @@ public class Game extends Canvas implements Runnable {
 
     // Variables that are critical for display in the HUD, ammo, hp etc.
     private int ammo = 50;
-    private int hp = 0; // Wizard fills the hp upon construction.
+    private int hp = 100; // Wizard fills the hp upon construction.
     private int lives; // Lives fed as argument in constructor.
-    private LevelOne level;
+    private LevelOne level; // this will be an abstract level
     private boolean totem_flag = false;
 
     // Modifying state debug
@@ -73,6 +73,7 @@ public class Game extends Canvas implements Runnable {
         GAME,
         HELP,
         PAUSE,
+        LEVEL_1,
     };
 
     public Game() {
@@ -87,19 +88,16 @@ public class Game extends Canvas implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-
         //device.setFullScreenWindow(frame); // Careful with this
 
         // Don't create a new instance of this handler again, could cause problems.
         // Instead place original instance into new classes, since the game objects are inside this handler.
-        handler = new Handler(); // independant for each level not the controller
+        // independant for each level not the controller
         level = new LevelOne(this);
         menu = new Menu();// yes every state object should be created here
         help = new Help();
         pause = new Pause();
-        //camera = new Camera(0, 0); // and the camera
-        this.addKeyListener(new KeyInput(handler)); // and the listener
+        camera = new Camera(0, 0); // and the camera
         lives = 3; // lives and HP are independant of the level.
 
         BufferedImageLoader loader = new BufferedImageLoader();
@@ -138,7 +136,7 @@ public class Game extends Canvas implements Runnable {
                 break;
         }*/
 
-        this.addMouseListener(new MouseInput(handler, camera, this, ss, cs));
+        this.Update();
 
         //loadLevel(level);
         frame.add(this); // Add this game to the frame.
@@ -196,14 +194,9 @@ public class Game extends Canvas implements Runnable {
     public void tick() {
         // Change this to a switch statement, every different case has it's own tick.
         // Moves objects to next position 60 times a second.
-        /*if(State == STATE.GAME) {
-            for(int i = 0; i < handler.getObject().size(); i++) {
-                if(handler.getObject().get(i).getId() == ID.Player) {
-                    camera.tick(handler.getObject().get(i));
-                }
-            }
-            handler.tick();
-        }*/
+        if(State == STATE.LEVEL_1) {
+            level.tick();
+        }
     } // end tick method
 
     public void render() {
@@ -221,10 +214,8 @@ public class Game extends Canvas implements Runnable {
         /* Get the graphics2D object from the buffer strategy. */
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
-        menu.render(g);
-
-        if(State == STATE.GAME) {
-            // level.render
+        if(State == STATE.LEVEL_1) {
+            level.render(g);
             //////////////////////////////////
         } else if(State == STATE.MENU) {
             menu.render(g);
@@ -245,6 +236,15 @@ public class Game extends Canvas implements Runnable {
     public static void quitGame(){
         // If quit game is activated, the window will close and the program will exit.
         System.exit(0);
+    }
+
+    public void Update(){
+        // Update handler, controllers etc.
+        handler = getHandler();
+        camera = getCamera();
+        this.addMouseListener(new MouseInput(handler, camera, this, ss, cs));
+        this.addKeyListener(new KeyInput(handler)); // is getting null for some reason?
+
     }
 
     /* Setters and getters for private variables. */
@@ -292,6 +292,26 @@ public class Game extends Canvas implements Runnable {
     public void setLives(int lives)
     {
         this.lives = lives;
+    }
+
+    public Handler getHandler(){
+        // return the current handler depending on which level
+
+        return level.getHandler();
+    }
+
+    public void setHandler(){
+        if(State == STATE.LEVEL_1) {
+            this.handler = level.getHandler();
+        }
+    }
+
+    public Camera getCamera() {
+        return level.getCamera();
+    }
+
+    public LevelOne getLevel(){
+        return level;
     }
 
     public static void main(String[] args) {

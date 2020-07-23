@@ -55,7 +55,7 @@ public class MouseInput extends MouseAdapter {
         int x = e.getX();
         int y = e.getY();
 
-        if (game.getGameState() == Game.STATE.GAME) {
+        if (game.getGameState() == Game.STATE.LEVEL_1) {
 
             for(int i = 0; i < handler.getObject().size(); i++) {
                 GameObject tempObject = handler.getObject().get(i);
@@ -68,8 +68,8 @@ public class MouseInput extends MouseAdapter {
             } // end object for loop.
 
             if(resButton.contains(mx, my) && game.getHp() <= 0) {
-                // Res button if player has died but still has lives > 0.
-                //handler.addObject(new Wizard(50, 50, ID.Player, handler, lgame, cs));
+                game.setHp(100);
+                handler.addObject(new Wizard(50, 50, ID.Player, handler, game.getLevel(), cs));
             }
 
             if(escButton.contains(x, y)) {
@@ -81,7 +81,7 @@ public class MouseInput extends MouseAdapter {
 
         else if (game.getGameState() == Game.STATE.MENU) {
             if(playButton.contains(x, y)) {
-                game.setGameState(Game.STATE.GAME);
+                game.setGameState(Game.STATE.LEVEL_1);
             }
 
             else if(helpButton.contains(x, y)) {

@@ -5,16 +5,17 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import edu.sdccd.cisc191.wizardGame.Game;
+import edu.sdccd.cisc191.wizardGame.gui.screen.AbstractLevel;
 import edu.sdccd.cisc191.wizardGame.gui.screen.LevelOne;
 import edu.sdccd.cisc191.wizardGame.utils.images.SpriteSheet;
 
 public class Block extends GameObject {
 
-    LevelOne level; // Needs access to game in order to access level
+    AbstractLevel level; // Needs access to game in order to access level
 
     private BufferedImage block_image;
 
-    public Block(int x, int y, ID id, SpriteSheet ss, LevelOne level) {
+    public Block(int x, int y, ID id, SpriteSheet ss, AbstractLevel level) {
         super(x, y, id, ss);
 
         this.level = level; // Needs access to level to determine which level we are on.

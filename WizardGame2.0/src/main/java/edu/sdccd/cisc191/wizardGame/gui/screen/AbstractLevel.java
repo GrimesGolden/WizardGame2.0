@@ -11,36 +11,29 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
-public class LevelOne {
+public abstract class AbstractLevel {
 
-    // Make them all private because the level is the one who will act on these variables.
-    private Game game; // needs access to game controller to obtain variables such as ammo, hp etc.
-    private BufferedImageLoader loader = new BufferedImageLoader();
-    // Camera and handler.
-    private Camera levelOneCamera;
-    private Handler levelOneHandler;
+    protected Game game;
+    protected BufferedImageLoader loader = new BufferedImageLoader();
 
+    // Load camera and handler.
+    protected Camera camera;
+    protected Handler handler;
 
-    
-    // The should be in an abstract/parent class. 
-    private SpriteSheet ss = new SpriteSheet(loader.loadImage("/main_sheet.png")); // Who says we need to declare variables?
-    private SpriteSheet cs = new SpriteSheet(loader.loadImage("/wizard_sheet.png")); // character sheet
-    private BufferedImage levelOneImage = loader.loadImage("/level_one.png");
+    // Load level images and sprite sheets.
+    protected SpriteSheet ss = new SpriteSheet(loader.loadImage("/main_sheet.png")); // Who says we need to declare variables?
+    protected SpriteSheet cs = new SpriteSheet(loader.loadImage("/wizard_sheet.png")); // character sheet
+    protected BufferedImage levelImage = loader.loadImage("/level_one.png");
+    protected BufferedImage livesImage = cs.grabImage(13, 8, 32, 32); // Sprite to display lives.
+    protected BufferedImage floor = null;
 
-    private BufferedImage lives_image = cs.grabImage(13, 8, 32, 32); // Sprite to display lives.
-    
-    
-    private BufferedImage floor = null;
-    
-    public LevelOne(Game game) {
+    public AbstractLevel(Game game) {
         this.game = game;
-        levelOneCamera = new Camera(0, 0); // and the camera
-        this.levelOneHandler = new Handler(); // make sure the handler is started from new.
-
-        loadLevel(levelOneImage); // now this shouldn't really load 60 times a second. So we will move this somewhere else // smart choice to put it her
+        camera = new Camera(0, 0); // and the camera
+        handler = new Handler(); // make sure the handler is started from new.
     }
 
-    private void loadLevel(BufferedImage image) {
+    public void loadLevel(BufferedImage image) {
         int w = image.getWidth();
         int h = image.getHeight();
 
@@ -53,42 +46,32 @@ public class LevelOne {
 
                 // Color map determines which sprites render to the map.
                 if (red == 255 && green == 0 && blue == 0) // pure red
-                    levelOneHandler.addObject(new Block(xx * 32, yy * 32, ID.Block, ss, this));
+                    handler.addObject(new Block(xx * 32, yy * 32, ID.Block, ss, this));
 
                 if (red == 0 && green == 0 && blue == 255) // pure blue
-                    levelOneHandler.addObject(new Wizard(xx * 32, yy * 32, ID.Player, levelOneHandler, this, cs));
+                    handler.addObject(new Wizard(xx * 32, yy * 32, ID.Player, handler, this, cs));
 
                 if (red == 0 && green == 255 && blue == 0) // pure green
-                    levelOneHandler.addObject(new Minion(xx * 32, yy * 32, ID.Minion, levelOneHandler, cs));
+                    handler.addObject(new Minion(xx * 32, yy * 32, ID.Minion, handler, cs));
 
                 if (red == 0 && green == 255 && blue == 255) // pure cyan
-                    levelOneHandler.addObject(new Crate(xx * 32, yy * 32, ID.Crate, ss));
+                    handler.addObject(new Crate(xx * 32, yy * 32, ID.Crate, ss));
 
                 if (red == 255 && green == 255 && blue == 0) // pure yellow
-                    levelOneHandler.addObject(new Totem(xx * 32, yy * 32, ID.Totem, ss));
+                    handler.addObject(new Totem(xx * 32, yy * 32, ID.Totem, ss));
 
                 if (red == 255 && green == 0 && blue == 255) //pure magenta
-                    levelOneHandler.addObject(new Knight(xx * 32, yy * 32, ID.Knight, levelOneHandler, this, cs));
+                    handler.addObject(new Knight(xx * 32, yy * 32, ID.Knight, handler, this, cs));
 
                 if (red == 0 && green == 153 && blue == 102) // # 009966 green
-                    levelOneHandler.addObject(new Ent(xx * 32, yy * 32, ID.Ent, levelOneHandler, this, cs)); //
+                    handler.addObject(new Ent(xx * 32, yy * 32, ID.Ent, handler, this, cs)); //
 
                 if (red == 255 && green == 153 && blue == 51) // # ff9933 vivid orange
-                    levelOneHandler.addObject(new Hound(xx * 32, yy * 32, ID.Hound, levelOneHandler, cs));
+                    handler.addObject(new Hound(xx * 32, yy * 32, ID.Hound, handler, cs));
             }
+
         }
     }
-
-    public void tick() {
-        // Change this to a switch statement, every different case has it's own tick. 
-        // Moves objects to next position 60 times a second.
-        for(int i = 0; i < this.levelOneHandler.getObject().size(); i++) {
-                if(this.levelOneHandler.getObject().get(i).getId() == ID.Player) {
-                    levelOneCamera.tick(this.levelOneHandler.getObject().get(i));
-                }
-            }
-        levelOneHandler.tick();
-    } // end tick method
 
     public void render(Graphics2D g) {
 
@@ -104,7 +87,7 @@ public class LevelOne {
         g.fillRect(0, 0, 1920, 1080);
 
         // Translate location of camera.
-        g.translate(-levelOneCamera.getX(), -levelOneCamera.getY());
+        g.translate(-camera.getX(), -camera.getY());
 
         for(int xx = 0; xx < 30*92; xx += 32) { //debug
             for(int yy = 0; yy < 30*72; yy += 32) {
@@ -113,10 +96,10 @@ public class LevelOne {
         }
 
         // Render all GameObjects
-        levelOneHandler.render(g);
+        handler.render(g);
 
         // Keep translating camera as coords change. (Follow player)
-        g.translate(levelOneCamera.getX(), levelOneCamera.getY());
+        g.translate(camera.getX(), camera.getY());
 
         // HUD: Creating health bar.
         g.setColor(Color.gray);
@@ -151,7 +134,7 @@ public class LevelOne {
         // for the amount of lives render an image.
         int x = 100; // Create x coordinate
         for (int i = this.getLives(); i > 0; i--) {
-            g.drawImage(lives_image, x, 35, null);
+            g.drawImage(livesImage, x, 35, null);
             x += 20;
         }
 
@@ -166,8 +149,8 @@ public class LevelOne {
             Rectangle resButton = new Rectangle(810, 150, 150, 75); //reset button.
             g.draw(resButton);
 
-            levelOneCamera.setX(0); //reset camera so button coordinates don't glitch.
-            levelOneCamera.setY(0);
+            camera.setX(0); //reset camera so button coordinates don't glitch.
+            camera.setY(0);
         }
 
         if(this.getLives() <= 0) {
@@ -195,30 +178,31 @@ public class LevelOne {
                 If you don't kill the thread with stop(); You're not going to like what happens...
                 Every level will be a new thread. Layering on top of the window.
                  */
-            //stop();
-           // new Game(level_numb, lives);
-        } // end render
+        //stop();
+        // new Game(level_numb, lives);
+    } // end render
 
     public void resetLevel() {
         // Resets hp, lives and reloads level.
         game.setHp(100);
         game.setLives(3);
-        levelOneHandler.clearHandler();
+        handler.clearHandler();
         loadLevel(levelImage);
     }
 
+    // getters and setters.
     public int getHp(){
         return game.getHp();
     }
-    
+
     public void decHp(){
         game.decHp();
     }
-    
+
     public int getLives() {
         return game.getLives();
     }
-    
+
     public void decLives() {
         game.decLives();
     }
@@ -231,10 +215,10 @@ public class LevelOne {
     }
 
     public Handler getHandler(){
-        return levelOneHandler;
+        return handler;
     }
 
     public Camera getCamera() {
-        return levelOneCamera;
+        return camera;
     }
 }

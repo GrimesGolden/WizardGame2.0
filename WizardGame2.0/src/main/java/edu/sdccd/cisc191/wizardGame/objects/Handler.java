@@ -35,6 +35,13 @@ public class Handler {
         }
     }
 
+    public void clearHandler()
+            // Empties the linked list.
+            // Will be used to clear the list upon starting a new level or state.
+    {
+        object.clear();
+    }
+
     public void addObject(GameObject tempObject) {
         object.add(tempObject);
     }

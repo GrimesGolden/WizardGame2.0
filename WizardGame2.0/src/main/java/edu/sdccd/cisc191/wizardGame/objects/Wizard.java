@@ -6,23 +6,23 @@ import java.awt.image.BufferedImage;
 
 import edu.sdccd.cisc191.wizardGame.Game;
 import edu.sdccd.cisc191.wizardGame.gui.anim.Animation;
+import edu.sdccd.cisc191.wizardGame.gui.screen.AbstractLevel;
 import edu.sdccd.cisc191.wizardGame.gui.screen.LevelOne;
 import edu.sdccd.cisc191.wizardGame.utils.images.SpriteSheet;
 
 public class Wizard extends GameObject {
 
     Handler handler;
-    LevelOne level;
+    AbstractLevel level;
 
     private BufferedImage[] wizard_image = new BufferedImage[4];
 
     Animation anim;
 
-    public Wizard(int x, int y, ID id, Handler handler, LevelOne level, SpriteSheet cs) {
+    public Wizard(int x, int y, ID id, Handler handler, AbstractLevel level, SpriteSheet cs) {
         super(x, y, id, cs);
         this.handler = handler;
         this.level = level;
-        //game.hp += 100;
 
         wizard_image[0] = cs.grabImage(13, 8, 32, 32);
         wizard_image[1] = cs.grabImage(14, 8, 32, 32);
