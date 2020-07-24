@@ -69,7 +69,7 @@ public class MouseInput extends MouseAdapter {
 
             if(resButton.contains(mx, my) && game.getHp() <= 0) {
                 game.setHp(100);
-                handler.addObject(new Wizard(50, 50, ID.Player, handler, game.getLevel(), cs));
+                game.respawn();
             }
 
             if(escButton.contains(x, y)) {

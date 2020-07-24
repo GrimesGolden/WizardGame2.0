@@ -14,15 +14,17 @@ public class Wizard extends GameObject {
 
     Handler handler;
     AbstractLevel level;
+    Game game;
 
     private BufferedImage[] wizard_image = new BufferedImage[4];
 
     Animation anim;
 
-    public Wizard(int x, int y, ID id, Handler handler, AbstractLevel level, SpriteSheet cs) {
+    public Wizard(int x, int y, ID id, Handler handler, Game game, AbstractLevel level, SpriteSheet cs) {
         super(x, y, id, cs);
         this.handler = handler;
         this.level = level;
+        this.game = game;
 
         wizard_image[0] = cs.grabImage(13, 8, 32, 32);
         wizard_image[1] = cs.grabImage(14, 8, 32, 32);
@@ -93,9 +95,8 @@ public class Wizard extends GameObject {
             if(tempObject.getId() == ID.Totem) {
 
                 if(getBounds().intersects(tempObject.getBounds())) {
-                    //game.totem_flag = true;
-                    //game.level_numb++;
                     handler.removeObject(tempObject);
+                    game.setLevel(2);
                 }
             }
 
