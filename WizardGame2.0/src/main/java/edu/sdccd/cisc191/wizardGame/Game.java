@@ -5,7 +5,10 @@ import edu.sdccd.cisc191.wizardGame.events.MouseInput;
 import edu.sdccd.cisc191.wizardGame.gui.anim.Camera;
 import edu.sdccd.cisc191.wizardGame.gui.screen.Menu;
 import edu.sdccd.cisc191.wizardGame.gui.screen.*;
+import edu.sdccd.cisc191.wizardGame.objects.Bullet;
+import edu.sdccd.cisc191.wizardGame.objects.GameObject;
 import edu.sdccd.cisc191.wizardGame.objects.Handler;
+import edu.sdccd.cisc191.wizardGame.objects.ID;
 import edu.sdccd.cisc191.wizardGame.utils.images.BufferedImageLoader;
 import edu.sdccd.cisc191.wizardGame.utils.images.SpriteSheet;
 
@@ -64,8 +67,6 @@ public class Game extends Canvas implements Runnable {
         GAME,
         HELP,
         PAUSE,
-        LEVEL_1,
-        LEVEL_2,
     };
 
     public Game() {
@@ -90,7 +91,6 @@ public class Game extends Canvas implements Runnable {
         menu = new Menu();
         help = new Help();
         pause = new Pause();
-        camera = new Camera(0, 0); // and the camera // Do we need a camera in the game class?
 
         // Load in the sprite sheets. One for the levels, one for characters.
         ss = new SpriteSheet(loader.loadImage("/main_sheet.png"));
@@ -187,7 +187,7 @@ public class Game extends Canvas implements Runnable {
     } // end render method
 
 
-    public static void quitGame(){
+    public static void quit(){
         // If quit game is activated, the window will close and the program will exit.
         System.exit(0);
     }
@@ -220,6 +220,10 @@ public class Game extends Canvas implements Runnable {
 
     public void incAmmo(int inc){
         ammo += inc;
+    }
+
+    public void decAmmo() {
+        ammo-= 1;
     }
 
     public int getHp(){

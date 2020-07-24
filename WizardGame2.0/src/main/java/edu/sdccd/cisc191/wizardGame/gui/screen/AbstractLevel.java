@@ -40,12 +40,13 @@ public abstract class AbstractLevel {
     protected BufferedImage floorFive = ss.grabImage(6, 6, 32, 32);
 
     // Current Level Map and Current Floor. Instantiated in Extended class.
-    protected BufferedImage currentLevelImage;
+    protected BufferedImage currentMap;
     protected BufferedImage floor;
 
     // Sprite used to display lives in HUD
     protected BufferedImage livesImage = cs.grabImage(13, 8, 32, 32); // Sprite to display lives.
 
+    // Constructor
     public AbstractLevel(Game game) {
         this.game = game;
         camera = new Camera(0, 0); // and the camera
@@ -53,7 +54,7 @@ public abstract class AbstractLevel {
     }
 
     public void loadLevel(BufferedImage image) {
-        currentLevelImage = image;
+        currentMap = image;
 
         int w = image.getWidth();
         int h = image.getHeight();
@@ -95,18 +96,21 @@ public abstract class AbstractLevel {
     }
 
     public void respawn() {
+        // Respawn the wizard after death.
+
         // Set all key releases to true.
         handler.setUp(false);
         handler.setDown(false);
         handler.setLeft(false);
         handler.setRight(false);
 
-        int w = currentLevelImage.getWidth();
-        int h = currentLevelImage.getHeight();
+        // Use current map file to load Wizard back in original position.
+        int w = currentMap.getWidth();
+        int h = currentMap.getHeight();
 
         for (int xx = 0; xx < w; xx++) {
             for (int yy = 0; yy < h; yy++) {
-                int pixel = currentLevelImage.getRGB(xx, yy);
+                int pixel = currentMap.getRGB(xx, yy);
                 int red = (pixel >> 16) & 0xff;
                 int green = (pixel >> 8) & 0xff;
                 int blue = (pixel) & 0xff;
@@ -119,8 +123,7 @@ public abstract class AbstractLevel {
     }
 
     public void tick() {
-        // Change this to a switch statement, every different case has it's own tick.
-        // Moves objects to next position 60 times a second. // Maybe too many this statements. Overkill.
+        // Tick all current game objects, and have camera follow player.
         for(int i = 0; i < this.handler.getObject().size(); i++) {
             if(this.handler.getObject().get(i).getId() == ID.Player) {
                 camera.tick(this.handler.getObject().get(i));
@@ -130,13 +133,6 @@ public abstract class AbstractLevel {
     } // end tick method
 
     public void render(Graphics2D g) {
-
-
-
-        ///////////this is where we draw Objects and Background to game///////////////////////
-
-        // this will be a method in the abstract level class.
-
 
         // Create background.
         g.setColor(Color.black);
@@ -217,25 +213,7 @@ public abstract class AbstractLevel {
             game.setGameState(Game.STATE.MENU); // this is how it's done.
             resetLevel();
             // Go back to the menu.
-
-            // Brief explanation, basically this is refreshing lives so we don't end up back here,
-            // Starting a new game, then killing this thread. If you don't stop this thread.
-            // You're gonna have a bad time....
-            // Doesn't need to be here. This should be done in it's own class.
-            //stop();
-            //lives = 3;
-            //new Game(1, lives);
         }
-
-        // Level functionality (possibly refactor into new function)
-        //if(totem_flag == true) {
-                /* If the public level_numb variable has incremented
-                Then kill the thread and start a new game loading a new level.
-                If you don't kill the thread with stop(); You're not going to like what happens...
-                Every level will be a new thread. Layering on top of the window.
-                 */
-        //stop();
-        // new Game(level_numb, lives);
     } // end render
 
     public void resetLevel() {
@@ -244,11 +222,11 @@ public abstract class AbstractLevel {
         game.setLives(3);
         game.setLevel(1);
         handler.clearHandler();
-        loadLevel(currentLevelImage);
+        loadLevel(currentMap);
         game.Update();
     }
 
-    // getters and setters.
+    /*getters and setters.*/
     public int getHp(){
         return game.getHp();
     }
